@@ -1,165 +1,83 @@
-/* =============================================
-   ANOXIA — Stylesheet
-   Deep-ocean minimalist aesthetic
-   ============================================= */
-
-@import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap');
-
-/* --- CSS Variables --- */
-:root {
-  --bg:          #02040f;
-  --neon:        #a7c2c9;
-  --neon-dim:    rgba(0, 212, 255, 0.35);
-  --neon-glow:   rgba(0, 212, 255, 0.12);
-  --text:        #a8cfd8;
-  --text-dim:    rgba(168, 207, 216, 0.45);
-  --mono:        'Rajdhani', sans-serif;
-  --body-font:   'Rajdhani', sans-serif;
-}
-
-/* --- Reset & Base --- */
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html, body {
-  width: 100%; height: 100%;
-  overflow: hidden;
-  background: var(--bg);
-  color: var(--text);
-  font-family: var(--body-font);
-  cursor: crosshair;
-}
-
-/* --- Canvas container fills viewport --- */
-#canvas-container {
+/* --- ANOXIA HUD PANEL (Data Brutalism) --- */
+#anoxia-hud {
   position: fixed;
-  inset: 0;
-  z-index: 0;
-}
-
-#canvas-container canvas {
-  display: block;
-  width: 100% !important;
-  height: 100% !important;
-}
-
-/* --- UI Overlay --- */
-#ui {
-  position: fixed;
-  top: 0; left: 0; right: 0;
-  z-index: 10;
+  top: 30px;
+  left: 30px;
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  padding: 28px 36px 22px;
-  background: linear-gradient(
-    to bottom,
-    rgba(2, 4, 15, 0.88) 0%,
-    rgba(2, 4, 15, 0.0)  100%
-  );
+  flex-direction: column;
+  gap: 15px;
+  z-index: 100;
   pointer-events: none;
+  /* Mouse tıklamalarını engellemez, canvas'a geçirir */
 }
 
-#controls {
-  pointer-events: all;
-  display: flex;
-  flex-direction: row;         /* sliders sit side by side */
-  align-items: flex-start;
-  gap: 32px;
+.hud-module {
+  border-left: 2px solid #1DABF2;
+  /* p5.js'teki denizanası rengin */
+  background: rgba(0, 0, 9, 0.6);
+  /* Okyanus karanlığı */
+  padding: 8px 15px;
+  font-family: 'Courier New', Courier, monospace;
+  color: #1DABF2;
+  backdrop-filter: blur(4px);
+  /* Arka planı hafif buzlu cam yapar */
 }
 
-/* --- Title Block --- */
-#title-block {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
+.hud-title {
+  font-size: 10px;
+  letter-spacing: 2px;
+  opacity: 0.7;
+  margin-bottom: 5px;
 }
 
-#title {
-  font-size: 32px;
-  color: var(--neon);
-  font-family: var(--mono);
-  letter-spacing: 0.12em;
+.hud-value {
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0 0 8px rgba(29, 171, 242, 0.5);
 }
 
-/* --- Each slider group --- */
-.slider-group {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
+.hud-unit {
+  font-size: 12px;
+  margin-left: 8px;
+  opacity: 0.6;
 }
 
-.slider-header {
-  display: flex;
-  align-items: baseline;
-  gap: 6px;
+/* Kritik Eşik - Kırmızı Alarm (Anoxia Durumu) */
+.critical .hud-value,
+.critical .hud-unit {
+  color: #ff3333;
+  text-shadow: 0 0 8px rgba(255, 51, 51, 0.5);
 }
 
-.slider-group label {
-  font-family: var(--mono);
-  font-size: 0.58rem;
-  letter-spacing: 0.25em;
-  color: var(--text-dim);
-  text-transform: uppercase;
+/* Ölçek Barı Özel Tasarımı */
+.scale-module {
+  margin-top: 20px;
+  border-left: none;
+  border-bottom: 2px solid #1DABF2;
+  padding-bottom: 4px;
 }
 
-.unit-tag {
-  font-family: var(--mono);
-  font-size: 0.48rem;
-  letter-spacing: 0.15em;
-  color: rgba(168, 207, 216, 0.25);
-  text-transform: lowercase;
+.scale-bar {
+  width: 150px;
+  height: 6px;
+  border-left: 1px solid #1DABF2;
+  border-right: 1px solid #1DABF2;
+  position: relative;
+  margin: 5px 0;
 }
 
-.slider-row-inner {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.scale-bar::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: #1DABF2;
+  opacity: 0.5;
 }
 
-/* Count / value readout */
-.readout {
-  font-family: var(--mono);
-  font-size: 1.0rem;
-  color: var(--neon);
-  text-shadow: 0 0 10px var(--neon-dim);
-  min-width: 2ch;
-  text-align: right;
-}
-
-/* --- Custom Range Slider (shared) --- */
-input[type="range"] {
-  -webkit-appearance: none;
-  appearance: none;
-  width: clamp(100px, 14vw, 200px);
-  height: 2px;
-  background: var(--neon-dim);
-  border-radius: 0;
-  outline: none;
-  cursor: pointer;
-  box-shadow: 0 0 8px var(--neon-glow);
-}
-
-input[type="range"]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  background: var(--neon);
-  transition: transform 0.15s ease;
-}
-input[type="range"]:hover::-webkit-slider-thumb {
-  transform: scale(1.35);
-}
-
-input[type="range"]::-moz-range-thumb {
-  width: 12px; height: 12px;
-  border-radius: 50%;
-  border: none;
-  background: var(--neon);
-  box-shadow: 0 0 8px var(--neon-dim);
-}
-
-input[type="range"]::-moz-range-track {
-  background: var(--neon-dim);
-  height: 2px;
+.scale-text {
+  font-size: 10px;
+  letter-spacing: 1px;
 }
