@@ -1,83 +1,158 @@
-/* --- ANOXIA HUD PANEL (Data Brutalism) --- */
-#anoxia-hud {
-  position: fixed;
-  top: 30px;
-  left: 30px;
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  z-index: 100;
-  pointer-events: none;
-  /* Mouse tıklamalarını engellemez, canvas'a geçirir */
+/* =============================================
+   ANOXIA — Stylesheet (Data Brutalism)
+   ============================================= */
+
+/* 1. BEYAZ BOŞLUKLARI VE KAYDIRMA ÇUBUKLARINI YOK ETME */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* Sayfanın kaymasını engeller */
+  background-color: #00001a;
+  /* Okyanus karanlığı (beyaz parlamaları önler) */
 }
 
+/* p5.js canvas'ının altındaki varsayılan boşluğu siler */
+canvas {
+  display: block;
+}
+
+/* --- ANOXIA HUD PANEL (Yatay Dizilim) --- */
+#anoxia-hud {
+  position: fixed;
+  bottom: 40px;
+  /* Ekranın en altına sabitleme */
+  left: 0;
+  width: 100%;
+  /* Tüm ekranı kapla */
+  display: flex;
+  flex-direction: row;
+  /* Panelleri yatay olarak sırala */
+  justify-content: left;
+  /* Ekranın ortasına hizala */
+  align-items: flex-end;
+  /* Panellerin alt kısımlarını aynı hizaya getir */
+  gap: 80px;
+  /* Paneller arasındaki yatay boşluk */
+  z-index: 100;
+  pointer-events: none;
+}
+
+/* 2. SOL ÇİZGİLERİN VE PARLAKLIĞIN KALDIRILMASI */
 .hud-module {
-  border-left: 2px solid #1DABF2;
-  /* p5.js'teki denizanası rengin */
-  background: rgba(0, 0, 9, 0.6);
-  /* Okyanus karanlığı */
-  padding: 8px 15px;
-  font-family: 'Courier New', Courier, monospace;
+  /* border-left: 2px solid #1DABF2; -> İPTAL EDİLDİ */
+  background: rgba(0, 0, 9, 0.8);
+  /* Şeffaf koyu zemin korundu */
+  padding: 10px 20px;
+  font-family: 'IBM Plex Mono', monospace;
   color: #1DABF2;
-  backdrop-filter: blur(4px);
-  /* Arka planı hafif buzlu cam yapar */
+  /* Düz renk, parlama (glow) yok */
 }
 
 .hud-title {
-  font-size: 10px;
-  letter-spacing: 2px;
-  opacity: 0.7;
+  font-size: 16px;
+  font-weight: 200;
+  letter-spacing: -0.2px;
   margin-bottom: 5px;
 }
 
 .hud-value {
   font-size: 24px;
-  font-weight: bold;
-  text-shadow: 0 0 8px rgba(29, 171, 242, 0.5);
+  font-weight: 600;
+  /* text-shadow: 0 0 8px rgba(...) -> İPTAL EDİLDİ */
 }
 
 .hud-unit {
-  font-size: 12px;
+  font-size: 16px;
   margin-left: 8px;
-  opacity: 0.6;
-}
-
-/* Kritik Eşik - Kırmızı Alarm (Anoxia Durumu) */
-.critical .hud-value,
-.critical .hud-unit {
-  color: #ff3333;
-  text-shadow: 0 0 8px rgba(255, 51, 51, 0.5);
-}
-
-/* Ölçek Barı Özel Tasarımı */
-.scale-module {
-  margin-top: 20px;
-  border-left: none;
-  border-bottom: 2px solid #1DABF2;
-  padding-bottom: 4px;
-}
-
-.scale-bar {
-  width: 150px;
-  height: 6px;
-  border-left: 1px solid #1DABF2;
-  border-right: 1px solid #1DABF2;
-  position: relative;
-  margin: 5px 0;
-}
-
-.scale-bar::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: #1DABF2;
   opacity: 0.5;
 }
 
-.scale-text {
-  font-size: 10px;
+/* Kritik Eşik (Anoxia Durumu) - Glow efekti iptal edildi */
+.critical .hud-value,
+.critical .hud-unit {
+  color: #ff3333;
+  /* text-shadow: 0 0 8px rgba(...) -> İPTAL EDİLDİ */
+}
+
+
+
+/* ─── pH Bar Module ─────────────────────────────────────────────── */
+.ph-module {
+  width: 340px;
+  padding: 10px 16px 12px;
+}
+
+.ph-bar-wrapper {
+  position: relative;
+  width: 100%;
+  padding-bottom: 12px;
+  /* room for triangle below bar */
+}
+
+/* The row of 14 segments */
+.ph-bar {
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  height: 28px;
+  gap: 2px;
+}
+
+/* Individual segment */
+.ph-seg {
+  position: relative;
+  height: 100%;
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: hidden;
+  /* no transition — highlighting is disabled */
+}
+
+
+/* Downward-pointing triangle pointer — sits below the bar */
+.ph-triangle {
+  position: absolute;
+  bottom: 0;
+  /* below the bar */
+  left: 0;
+  /* updated via JS */
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-top: 8px solid #1DABF2;
+  /* ▼ points down */
+  transition: left 0.3s ease;
+}
+
+/* Numeric pH readout line */
+.ph-readout {
+  margin-top: 4px;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: rgba(29, 171, 242, 0.7);
   letter-spacing: 1px;
+  text-align: right;
+}
+
+/* Axis labels: 0 — 7.5 — 14 just above the triangle */
+.ph-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  /* tight gap between numbers and triangle below */
+}
+
+.ph-axis-label {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  color: rgba(29, 171, 242, 0.55);
+  user-select: none;
+  letter-spacing: 0.5px;
 }
