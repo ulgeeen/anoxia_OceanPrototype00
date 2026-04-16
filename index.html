@@ -14,10 +14,22 @@
 </head>
 
 <body>
+  <div id="pollution-controls">
+    <button onclick="triggerPollution('MP')">MICROPLASTIC</button>
+    <button onclick="triggerPollution('CO2')">CO2</button>
+    <button onclick="triggerPollution('NP')">N/P</button>
+  </div>
+
+  <div id="nav-toggle">
+    <button onclick="location.href='dataviz.html'">DATA SPECIMEN →</button>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.10.0/p5.min.js"></script>
   <script src="sketch.js"></script>
   <script src="jellyfish.js"></script>
   <script src="panel.js"></script>
+  <script src="mplastic.js"></script>
+  <script src="pollutant.js"></script>
 </body>
 
 </html>

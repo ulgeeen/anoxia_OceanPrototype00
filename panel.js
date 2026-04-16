@@ -52,7 +52,7 @@ class InfoPanel {
         const NUM_SEGS = 14;    // total number of segments (must match the pH 0–14 scale)
         const MIN_REL_W = 0.25; // width of the thinnest (edge) segment relative to the widest (centre)
         //   0.1 = very dramatic taper | 1.0 = all segments equal width
-        const MAX_RED_ALPHA = 0.25; // max opacity of the red fill on outermost segments (0–1)
+        const MAX_RED_ALPHA = 0.35; // max opacity of the red fill on outermost segments (0–1)
         //   0 = no red tint at all | 1 = fully opaque red
         // ──────────────────────────────────────────────────────────────────
 
@@ -117,18 +117,31 @@ class InfoPanel {
         readout.className = 'ph-readout';
         readout.innerText = '—';
         this.phReadout = readout;
-        mod.appendChild(readout);
+
+        wrapper.appendChild(bar);
+        wrapper.appendChild(this.phTriangle);
+        wrapper.appendChild(this.phReadout); // Yazıyı wrapper'a, üçgenden sonraya ekledik
+
+        mod.appendChild(wrapper);
+        // mod.appendChild(readout);  <-- BURAYI SİLDİK, çünkü artık wrapper içinde
 
         this.container.appendChild(mod);
         return mod;
+
     }
 
     // Move the pointer triangle based on pH (0–14 scale)
     updatePh(phValue) {
-        const clamped = Math.max(0, Math.min(14, phValue)); // clamp to valid pH range
-        const pct = (clamped / 14) * 100;              // convert to % along bar
-        this.phTriangle.style.left = `calc(${pct}% - 6px)`; // 6px = half triangle width (see CSS)
-        this.phReadout.innerText = phValue.toFixed(2) + ' pH'; // decimal places shown in readout
+        const clamped = Math.max(0, Math.min(14, phValue));
+        const pct = (clamped / 14) * 100;
+
+        // Üçgenin pozisyonu
+        this.phTriangle.style.left = `calc(${pct}% - 6px)`;
+
+        // Yazının (readout) pozisyonu - üçgenle aynı yüzdeyi kullanıyor
+        // -25px değeri yazıyı tam ortalamak içindir (yazı genişliğine göre ayarlanabilir)
+        this.phReadout.style.left = `calc(${pct}% - 25px)`;
+        this.phReadout.innerText = phValue.toFixed(2);
     }
 
     // ── Main update — called every frame from sketch.js ────────────────────
@@ -137,8 +150,7 @@ class InfoPanel {
 
         this.o2Display.innerText = o2Value.toFixed(2);   // decimal places for O₂ readout
 
-        let sign = tempValue > 0 ? '+' : '';
-        this.tempDisplay.innerText = sign + tempValue.toFixed(1); // decimal places for temp readout
+        this.tempDisplay.innerText = tempValue.toFixed(1);
 
         // ── Critical threshold: turns O₂ panel red when below this value
         const O2_CRITICAL = 2.0; // ppm — lower = more permissive, raise to warn earlier
@@ -162,7 +174,7 @@ class InfoPanel {
         const cx = width - OFFSET_X; // horizontal anchor
         const cy = height - OFFSET_Y; // vertical anchor
 
-        stroke('#1dabf26d'); // line colour — change to any p5 colour string or r,g,b values
+        stroke('#afb5bc'); // line colour — change to any p5 colour string or r,g,b values
         strokeWeight(1);   // line thickness in px
         noFill();
 

@@ -3,6 +3,16 @@
    ============================================= */
 
 /* 1. BEYAZ BOŞLUKLARI VE KAYDIRMA ÇUBUKLARINI YOK ETME */
+
+
+:root {
+  --white00: #e7ecf2;
+  --white01: #afb5bc;
+  --red00: #ef375f;
+  --blue00: #2ab0f2;
+  --darkblue00: #010a14;
+}
+
 html,
 body {
   margin: 0;
@@ -11,7 +21,7 @@ body {
   height: 100%;
   overflow: hidden;
   /* Sayfanın kaymasını engeller */
-  background-color: #00001a;
+  background-color: var(--darkblue00);
   /* Okyanus karanlığı (beyaz parlamaları önler) */
 }
 
@@ -44,11 +54,11 @@ canvas {
 /* 2. SOL ÇİZGİLERİN VE PARLAKLIĞIN KALDIRILMASI */
 .hud-module {
   /* border-left: 2px solid #1DABF2; -> İPTAL EDİLDİ */
-  background: rgba(0, 0, 9, 0.8);
+  background: rgba(0, 0, 9, 0);
   /* Şeffaf koyu zemin korundu */
   padding: 10px 20px;
   font-family: 'IBM Plex Mono', monospace;
-  color: #1DABF2;
+  color: var(--white01);
   /* Düz renk, parlama (glow) yok */
 }
 
@@ -74,7 +84,7 @@ canvas {
 /* Kritik Eşik (Anoxia Durumu) - Glow efekti iptal edildi */
 .critical .hud-value,
 .critical .hud-unit {
-  color: #ff3333;
+  color: var(--red00);
   /* text-shadow: 0 0 8px rgba(...) -> İPTAL EDİLDİ */
 }
 
@@ -126,19 +136,28 @@ canvas {
   height: 0;
   border-left: 6px solid transparent;
   border-right: 6px solid transparent;
-  border-top: 8px solid #1DABF2;
+  border-top: 8px solid var(--white01);
   /* ▼ points down */
   transition: left 0.3s ease;
 }
 
 /* Numeric pH readout line */
 .ph-readout {
-  margin-top: 4px;
+  position: absolute;
+  top: 42px;
+  /* Üçgenin (pointer) hemen altına denk gelmesi için mesafe */
+  width: 50px;
+  /* Yazının sığacağı sabit bir genişlik */
+  text-align: center;
+  /* Sayıyı kendi alanı içinde ortalar */
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 12px;
-  color: rgba(29, 171, 242, 0.7);
-  letter-spacing: 1px;
-  text-align: right;
+  font-size: 14px;
+  color: var(--white01);
+  /* Biraz daha görünür yaptık */
+  letter-spacing: 0.5px;
+  transition: left 0.3s ease;
+  /* Üçgenle aynı yumuşaklıkta hareket etmesi için */
+  pointer-events: none;
 }
 
 /* Axis labels: 0 — 7.5 — 14 just above the triangle */
@@ -152,7 +171,70 @@ canvas {
 .ph-axis-label {
   font-family: 'IBM Plex Mono', monospace;
   font-size: 12px;
-  color: rgba(29, 171, 242, 0.55);
+  color: var(--white01);
   user-select: none;
   letter-spacing: 0.5px;
+}
+
+/* --- KİRLİLİK BUTONLARI (SOL ÜST) --- */
+#pollution-controls {
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  z-index: 200;
+  display: flex;
+  gap: 8px;
+  /* Butonlar arası boşluk */
+}
+
+#pollution-controls button {
+  background: transparent;
+  color: var(--white01);
+  border: 1px solid var(--white01);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  padding: 4px 8px;
+  cursor: pointer;
+  letter-spacing: 0.5px;
+  transition: all 0.2s ease;
+}
+
+#pollution-controls button:hover {
+  background: var(--white01);
+  color: var(--darkblue00);
+}
+
+#pollution-controls button:active {
+  transform: translateY(2px);
+  /* Tıklanma hissi */
+}
+
+/* --- SAYFA GEÇİŞ BUTONU (SAĞ ÜST) --- */
+#nav-toggle {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 200;
+}
+
+#nav-toggle button {
+  background: transparent;
+  color: var(--white01);
+  border: 1px solid var(--white01);
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 10px;
+  padding: 4px 10px;
+  cursor: pointer;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  transition: all 0.2s ease;
+}
+
+#nav-toggle button:hover {
+  background: var(--white01);
+  color: var(--darkblue00);
+}
+
+#nav-toggle button:active {
+  transform: translateY(2px);
 }
